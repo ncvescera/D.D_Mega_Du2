@@ -1,0 +1,74 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="row">
+        <div class="col-10">
+            <h1>Serie nel database:</h1>
+
+        </div>
+        <div class="col-2">
+            <a class="btn btn-success" style="width: 100%;" href="/add_serie">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+                    <path d="M8 0a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2H9v6a1 1 0 1 1-2 0V9H1a1 1 0 0 1 0-2h6V1a1 1 0 0 1 1-1z"/>
+                  </svg>
+                Aggiungi Serie
+            </a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div id='box_serie'></div>
+        </div>
+    </div>
+
+    <script>
+
+        $(document).ready(
+            function() {
+                $.ajax({
+                    url: server_ip + '/serie',
+                    type: 'GET',
+                    dataType: 'jsonp',
+
+                    success: function(response) {
+                        var box = $('#box_serie');
+                        response.response.forEach(element => {
+                            // crea per ogni elemento dell'array la relativa carta
+                            var card = $('<div class="card"></div>');
+
+                            var header = $('<div class="card-header"></div>');
+                            var tabella = $('<table style="width: 100;"></table>').append(
+                                $('<tr style="width: 100%;"></tr>').append(
+                                    $('<td style="width: 100%; color: blue;"></td>').text(element.tag),
+                                    $('<td style="width: auto;"></td>').append(
+                                        $('<button class="btn btn-danger btn-sm" onclick=""></button>').html(
+                                            $('<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16"><path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/><path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/></svg>')
+                                        )
+                                    )
+                                )
+                            )
+                            header.append(tabella);
+
+                            var card_body = $('<div class="card-body" onclick="" style="cursor: pointer;"></div>').append(
+                                $('<h5 class="card-title"></h5>').text(element.nome),
+                                $('<p class="card-text"></p>').text(element.descrizione)
+                            );
+                            
+                            card.append(header, card_body);
+                            box.append(card);
+                            box.append($('<br>'));           
+                        });
+                    },
+
+                    error: function(error) {
+                        console.log(error);
+
+                    }
+                    
+                });
+            }
+        );
+         
+    </script>
+
+{% endblock content %}

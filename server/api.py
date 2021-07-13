@@ -1,5 +1,6 @@
 from flask import request, send_from_directory
 from app import *
+from models import *
 import json
 from werkzeug.utils import secure_filename
 import os
@@ -15,7 +16,7 @@ def all_serie():
 
     series_json = [x.as_dict() for x in series] # trasforma ogni serie in dizionario per essere convertito in json
 
-    return json.dumps({'response': series_json}), 200
+    return f'{request.args.get("callback")}({json.dumps({"response": series_json})})', 200
 
 
 @app.route('/serie/<int:id>', methods=['GET'])

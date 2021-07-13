@@ -10,8 +10,8 @@ class Serie(db.Model):
     def as_dict(self):
         return {
             'id': self.id,
-            'name': str(self.name),
-            'description': str(self.description),
+            'nome': str(self.nome),
+            'descrizione': str(self.descrizione),
             'tag': str(self.tag)
         }
 
