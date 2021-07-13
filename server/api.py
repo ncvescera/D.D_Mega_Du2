@@ -76,7 +76,10 @@ def rimuovi_serie(id):
 
 
 @app.route('/serie', methods=['PUT'])
+@cross_origin()
 def aggiorna_serie():
+    print(request.form)
+    print(request.json)
     nome = request.form['nome']
     descrizione = request.form['descrizione']
     tag = request.form['tag']
@@ -91,9 +94,9 @@ def aggiorna_serie():
         try:
             db.session.commit()
 
-            return json.dumps({'message': 'Serie aggiornata con successo !'}), 200
+            return jsonify({'message': 'Serie aggiornata con successo !'}), 200
 
         except:
-            return json.dumps({'error': 'Impossibile aggiornare i dati !'}), 400
+            return jsonify({'error': 'Impossibile aggiornare i dati !'}), 400
         
-    return json.dumps({'error': 'Serie inesistente !'}),400
+    return jsonify({'error': 'Serie inesistente !'}),400

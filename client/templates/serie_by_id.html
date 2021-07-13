@@ -20,11 +20,11 @@
         </div>
         <div class="card-body">
             <div class="row">
-                <div class="col-sm-10">
+                <div class="col-xl-10 col-md-9">
                     <h1 id="nome"></h1>
                 </div>
-                <div class="col-sm-2">
-                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                <div class="col-xl-2 col-md-3">
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#aggiorna_modal">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
                             <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
                             <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
@@ -36,15 +36,16 @@
             <p class="card-text"><h4>Descrizione:</h4> <span id="descrizione"></span></p>
             <br>
             <p class="card-text">
-                <h2>Episodi: </h2>
+                <h2>Stagioni: </h2>
                 <p>
                     <button class="btn btn-success" data-toggle="modal" data-target="#aggiungi_episodio">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
                             <path d="M8 0a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2H9v6a1 1 0 1 1-2 0V9H1a1 1 0 0 1 0-2h6V1a1 1 0 0 1 1-1z"/>
                         </svg>
-                        Aggiungi Episodio
+                        Aggiungi Stagione
                     </button>
                 </p>
+
                 <div>
                 </div>
             </p>
@@ -52,7 +53,47 @@
     </div>
 </div>
 
+<!-- MODAL -->
+<div class="modal fade" id="aggiorna_modal" tabindex="-1" role="dialog" aria-labelledby="aggiornaModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="aggiornaModalLabel">Modifica Serie</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            <form class="needs-validation" id="form_aggiorna_serie">
+                <fieldset class="form-group">
+                    <div class="form-group">
+                        <label for="nome_modal">Nome</label>
+                        <input type="text" id="nome_modal" name="nome" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="descrizione_modal">Descrizione: </label>
+                        <textarea id="descrizione_modal" name="descrizione" class="form-control"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="tag_modal">Tags: </label>
+                        <input type="text" name="tag" id="tag_modal" class="form-control">
+                        <small id="tagHelp" class="form-text text-muted">I tag devono essere di questo tipo: #tag</small>
+                    </div>
+                    <input type="hidden" id="id_modal" name="id" />
+                </fieldset>
+            </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="if (cambiamenti_effettuati) {location.reload();}">Chiudi</button>
+          <button type="submit" class="btn btn-primary" form="form_aggiorna_serie">Modifica</button>
+        </div>
+      </div>
+    </div>
+</div>
+
 <script>
+    var cambiamenti_effettuati = false; // variabile per vedere se serve riaggiornare il contenuto della pagina
+
     $(document).ready(
         function() {
             $.ajax({
@@ -70,6 +111,13 @@
                     $("#descrizione").text(serie.descrizione);
                     $("#nome").text(serie.nome);
 
+                    $("#id_modal").val(serie.id);
+                    $("#tag_modal").val(serie.tag);
+                    $("#nome_modal").val(serie.nome);
+                    $("#descrizione_modal").val(serie.descrizione);
+
+
+
                 },
 
                 error: function(error) {
@@ -81,30 +129,37 @@
         }
     )
 
-    $("form#form_aggiungi_episodio").submit(function(e) {
-        e.preventDefault();    
-        var formData = new FormData(this);
-    
-        $.ajax({
-            url: '/add_episodio',
-            type: 'POST',
-            data: formData,
-            processData: false,
-            contentType: false,
-            success: function(response) {
-                risposta = JSON.parse(response);    // converte la risposta in JSON
-                
-                alert(risposta.message);
-                //$('#errori').text(risposta.message).attr('class', 'alert alert-success'); // scrive il messaggio sul box per gli avvisi
-            },
-            error: function(error) {
-                errore = JSON.parse(error.responseText);     // converte la risposta in JSON
-    
-                alert(errore.error);
-                //$('#errori').text(errore.error).attr('class', 'alert alert-danger');    // scrive l'errore sul box per gli avvisi
+    $("#form_aggiorna_serie").submit(
+            // evita l'invio del form alla pressione del bottone
+            // verra' gestito da AJAX
+            function(e) {
+                e.preventDefault();
             }
-            
+    
+        ).validate({
+            messages : {
+                nome: {
+                    required: "Inserisci questo campo !"
+                },
+            },
+            submitHandler: function (form) {
+                $.ajax({
+                    url: server_ip + '/serie',
+                    type: 'PUT',
+                    data: $(form).serialize(),
+
+                    success: function(response) {
+                        cambiamenti_effettuati = true;
+                        alert(response.message);
+                    },
+
+                    error: function(error) {
+                        alert(error.responseJSON.error);
+                    }
+                    
+                });
+                
+            }
         });
-    });
 </script>
 {% endblock content %}
