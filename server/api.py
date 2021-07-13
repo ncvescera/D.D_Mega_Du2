@@ -22,12 +22,13 @@ def all_serie():
 
 
 @app.route('/serie/<int:id>', methods=['GET'])
+@cross_origin()
 def get_serie(id):
     serie = Serie.query.filter_by(id=id).first()
 
     serie_json = serie.as_dict()
 
-    return json.dumps({'response': serie_json}), 200
+    return jsonify({'response': serie_json}), 200
 
 
 @app.route('/serie', methods=['POST'])

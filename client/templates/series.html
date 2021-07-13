@@ -24,24 +24,6 @@
     </div>
 
     <script>
-        function elimina_serie(id) {
-   
-            $.ajax({
-                url: server_ip + '/serie/'+ id,
-                type: 'DELETE',
-                
-                success: function (response) {
-                    alert(response.message);
-                    location.reload();
-                },
-
-                error: function (error) {
-                    alert(error.responseJSON.error);
-                }
-
-            });
-        }
-
         $(document).ready(
             function() {
                 $.ajax({
@@ -68,7 +50,7 @@
                             )
                             header.append(tabella);
 
-                            var card_body = $('<div class="card-body" onclick="" style="cursor: pointer;"></div>').append(
+                            var card_body = $('<div class="card-body" style="cursor: pointer;"></div>').attr('onclick', 'location.href=\'/serie/'+ element.id + '\'').append(
                                 $('<h5 class="card-title"></h5>').text(element.nome),
                                 $('<p class="card-text"></p>').text(element.descrizione)
                             );
