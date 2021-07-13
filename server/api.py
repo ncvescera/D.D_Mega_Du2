@@ -56,6 +56,7 @@ def add_serie():
 
 
 @app.route('/serie/<int:id>', methods=['DELETE'])
+@cross_origin()
 def rimuovi_serie(id):
     #TODO: eliminare a cascata gli episodi e le stagioni !!!
 
@@ -66,11 +67,11 @@ def rimuovi_serie(id):
             db.session.delete(to_remove)
             db.session.commit()
 
-            return json.dumps({'message': 'Serie eliminata !'}), 200
+            return jsonify({'message': 'Serie eliminata !'}), 200
         except:
-            return json.dumps({'error': 'Impossibile eliminare la serie !'}), 400
+            return jsonify({'error': 'Impossibile eliminare la serie !'}), 400
 
-    return json.dumps({'error': 'La serie non esiste !'}), 400
+    return jsonify({'error': 'La serie non esiste !'}), 400
 
 
 @app.route('/serie', methods=['PUT'])
