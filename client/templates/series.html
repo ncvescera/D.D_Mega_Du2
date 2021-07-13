@@ -30,7 +30,7 @@
                 $.ajax({
                     url: server_ip + '/serie',
                     type: 'GET',
-                    dataType: 'jsonp',
+                    contentType: "application/json",
 
                     success: function(response) {
                         var box = $('#box_serie');

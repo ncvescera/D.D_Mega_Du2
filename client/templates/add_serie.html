@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="row">
+        <div class="col">
+            <h1>Aggiungi una nuova Serie</h1>
+            <br>
+            <form id="add_serie" class="needs-validation">
+                <div class="form-group">
+                    <label for="nome">Nome: </label>
+                    <input type="text" class="form-control" id="nome" name="nome" placeholder="Inserisci il nome della Serie" required>
+                </div>
+                <div class="form-group">
+                    <label for="descrizione">Descrizione: </label>
+                    <textarea class="form-control" id="descrizione" name="descrizione" placeholder="Inserisci una breve descrizione della Serie"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="tag">Tag: </label>
+                    <input type="text" class="form-control" id="tag" name="tag" placeholder="Inserisci i tag">
+                    <small id="tagHelp" class="form-text text-muted">I tag devono essere di questo tipo: #tag</small>
+                </div>
+                <button class="btn btn-info">Aggiungi</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        $("#add_serie").submit(
+            // evita l'invio del form alla pressione del bottone
+            // verra' gestito da AJAX
+            function(e) {
+                e.preventDefault();
+            }
+    
+        ).validate({
+            messages : {
+                nome: {
+                    required: "Inserisci questo campo !"
+                },
+            },
+            submitHandler: function (form) {
+                $.ajax({
+                    url: server_ip + '/serie',
+                    type: 'POST',
+                    data: $(form).serialize(),
+
+                    success: function(response) {
+                        alert(response.message);
+                    },
+
+                    error: function(error) {
+                        alert(error.responseJSON.error);
+                    }
+                    
+                });
+                
+            }
+        });
+    </script>
+{% endblock content %}

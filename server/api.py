@@ -1,4 +1,5 @@
-from flask import request, send_from_directory
+from flask import request, send_from_directory, jsonify
+from flask_cors import cross_origin
 from app import *
 from models import *
 import json
@@ -11,12 +12,13 @@ def test():
 
 
 @app.route('/serie', methods=['GET'])
+@cross_origin()
 def all_serie():
     series = Serie.query.all()
 
     series_json = [x.as_dict() for x in series] # trasforma ogni serie in dizionario per essere convertito in json
 
-    return f'{request.args.get("callback")}({json.dumps({"response": series_json})})', 200
+    return jsonify({"response": series_json}), 200
 
 
 @app.route('/serie/<int:id>', methods=['GET'])
@@ -29,8 +31,9 @@ def get_serie(id):
 
 
 @app.route('/serie', methods=['POST'])
+@cross_origin()
 def add_serie():
-    # prende i dati del form
+    # prende i dati del form  
     nome            = request.form['nome']
     descrizione     = request.form['descrizione']
     tag             = request.form['tag']
@@ -38,7 +41,7 @@ def add_serie():
     existing_serie = Serie.query.filter_by(nome=nome).first()
 
     if existing_serie:
-        return json.dumps({'error': 'La serie esiste già !'}), 400
+        return jsonify({"error": "La serie esiste già !"}), 400
     else:
         new_serie = Serie(nome=nome, descrizione=descrizione, tag=tag)
 
@@ -46,10 +49,10 @@ def add_serie():
             db.session.add(new_serie)
             db.session.commit()
 
-            return json.dumps({'message': f'Serie {nome} aggiunta con successo !'}), 200
+            return jsonify({"message": f"Serie {nome} aggiunta con successo !"}), 200
 
         except:
-            return json.dumps({'error': 'Impossibile aggiungere la serie :/'}), 401
+            return jsonify({"error": "Impossibile aggiungere la serie :/"}), 401
 
 
 @app.route('/serie/<int:id>', methods=['DELETE'])
