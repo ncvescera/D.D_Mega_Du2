@@ -130,11 +130,30 @@ def add_stagione():
             return jsonify({"error": "Impossibile aggiungere la stagione :/"}), 401
 
 
-@app.route('/stagione/<int:serie_id>', methods=['GET'])
+@app.route('/stagioni_of/<int:serie_id>', methods=['GET'])
 @cross_origin()
-def stagioni_py_serie(serie_id):
+def stagioni_by_serie(serie_id):
     stagioni = Stagione.query.filter_by(serie_id=serie_id)
 
     stagioni_json = [x.as_dict() for x in stagioni]
 
     return jsonify({"response": stagioni_json}), 200
+
+
+@app.route('/stagione/<int:id>', methods=['DELETE'])
+@cross_origin()
+def delete_stagione(id):
+    #TODO: eliminare a cascata tutti gli episodi appartenenti alla stagione
+
+    to_remove = Stagione.query.filter_by(id=id).first()
+
+    if to_remove:
+        try:
+            db.session.delete(to_remove)
+            db.session.commit()
+
+            return jsonify({'message': 'Stagione eliminata !'}), 200
+        except:
+            return jsonify({'error': 'Impossibile eliminare la stagione !'}), 400
+
+    return jsonify({'error': 'La stagione non esiste !'}), 400

@@ -15,3 +15,20 @@ function elimina_serie(id) {
 
     });
 }
+
+function elimina_stagione(id) {
+    $.ajax({
+        url: server_ip + '/stagione/'+ id,
+        type: 'DELETE',
+        
+        success: function (response) {
+            alert(response.message);
+            location.reload();
+        },
+
+        error: function (error) {
+            alert(error.responseJSON.error);
+        }
+
+    });
+}
