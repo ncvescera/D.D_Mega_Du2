@@ -46,8 +46,7 @@
                     </button>
                 </p>
 
-                <div id="box_stagione">
-                </div>
+                <div id="accordion"></div>
             </p>
         </div>
     </div>
@@ -107,18 +106,18 @@
             <form id="form_aggiungi_stagione">
                 <div class="form-group">
                     <label for="nome_stagione_modal">Nome</label>
-                    <input type="text" id="nome_stagione_modal" name="nome_stagione_modal" class="form-control" placeholder="Inserisci il nome dell stagione" required>
+                    <input type="text" id="nome_stagione_modal" name="nome" class="form-control" placeholder="Inserisci il nome dell stagione" required>
                 </div>
                 <div class="form-group">
                     <label for="descrizione_stagione_modal">Descrizione: </label>
-                    <textarea id="descrizione_stagione_modal" name="descrizione_stagione_modal" class="form-control" placeholder="Inserisci una breve descrizione"></textarea>
+                    <textarea id="descrizione_stagione_modal" name="descrizione" class="form-control" placeholder="Inserisci una breve descrizione"></textarea>
                 </div>
                 <div class="form-group">
                     <label for="tag_stagione_modal">Tags: </label>
-                    <input type="text" name="tag_stagione_modal" id="tag_stagione_modal" class="form-control" placeholder="#tag #qui">
+                    <input type="text" id="tag_stagione_modal" name="tag" class="form-control" placeholder="#tag #qui">
                     <small id="tagHelp" class="form-text text-muted">I tag devono essere di questo tipo: #tag</small>
                 </div>
-                <input type="hidden" id="serie_id_modal" name="serie_id_modal" />
+                <input type="hidden" id="serie_id_modal" name="serie_id" />
             </form>
         </div>
 
@@ -165,7 +164,28 @@
 
                         success: function(response) {
                             stagioni = response.response;
-                            
+
+                            var box_stagione = $('#accordion');
+
+                            stagioni.forEach(element => {
+                                var tmp = $('<div class="card"></div>').append(
+                                    $('<div class="card-header"></div>').attr('id', 'heading'+element.id).append(
+                                        $('<h5 class="mb-0"></h5>').append(
+                                            $('<button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"></button>').attr('data-target', '#collapse'+element.id).text(element.nome)
+                                        )
+                                    ),
+                                    $('<div class="collapse show" data-parent="#accordion"></div>').attr('id', 'collapse'+ element.id).attr('aria-labelledby', 'heading'+element.id).append(
+                                        $('<div class="card-body"></div>').append(
+                                            $('<p>').attr('style', 'color: blue;').text(element.tag),
+                                            $('<p>').text(element.descrizione)
+                                            
+                                        )
+                                    )
+                                );
+
+                                box_stagione.append(tmp);
+                            });
+                            /*
                             var box_stagione = $('#box_stagione');
                             var table = $("<table></table>").attr('class', 'table table-hover table-striped');
                             var tbody = $('<tbody></tbody>');
@@ -181,7 +201,7 @@
                             
                             table.append(tbody);
                             box_stagione.append(table);
-
+                            */
                         },
 
                         error: function(error) {
