@@ -100,3 +100,41 @@ def aggiorna_serie():
             return jsonify({'error': 'Impossibile aggiornare i dati !'}), 400
         
     return jsonify({'error': 'Serie inesistente !'}),400
+
+
+## --- STAGIONI --- ##
+
+@app.route('/stagione', methods=['POST'])
+@cross_origin()
+def add_stagione():
+    # prende i dati del form  
+    nome            = request.form['nome_stagione_modal']
+    descrizione     = request.form['descrizione_stagione_modal']
+    tag             = request.form['tag_stagione_modal']
+    serie_id        = request.form['serie_id_modal']
+
+    existing_stagione = Stagione.query.filter_by(nome=nome, serie_id=serie_id).first()
+
+    if existing_stagione:
+        return jsonify({"error": "La stagione esiste già !"}), 400
+    else:
+        new_stagione = Stagione(nome=nome, descrizione=descrizione, tag=tag, serie_id=serie_id)
+
+        try:
+            db.session.add(new_stagione)
+            db.session.commit()
+
+            return jsonify({"message": f"Stagione {nome} aggiunta con successo !"}), 200
+
+        except:
+            return jsonify({"error": "Impossibile aggiungere la stagione :/"}), 401
+
+
+@app.route('/stagione/<int:serie_id>', methods=['GET'])
+@cross_origin()
+def stagioni_py_serie(serie_id):
+    stagioni = Stagione.query.filter_by(serie_id=serie_id)
+
+    stagioni_json = [x.as_dict() for x in stagioni]
+
+    return jsonify({"response": stagioni_json}), 200

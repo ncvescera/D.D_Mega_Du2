@@ -38,7 +38,7 @@
             <p class="card-text">
                 <h2>Stagioni: </h2>
                 <p>
-                    <button class="btn btn-success" data-toggle="modal" data-target="#aggiungi_episodio">
+                    <button class="btn btn-success" data-toggle="modal" data-target="#aggiungi_stagione">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
                             <path d="M8 0a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2H9v6a1 1 0 1 1-2 0V9H1a1 1 0 0 1 0-2h6V1a1 1 0 0 1 1-1z"/>
                         </svg>
@@ -46,7 +46,7 @@
                     </button>
                 </p>
 
-                <div>
+                <div id="box_stagione">
                 </div>
             </p>
         </div>
@@ -57,35 +57,74 @@
 <div class="modal fade" id="aggiorna_modal" tabindex="-1" role="dialog" aria-labelledby="aggiornaModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
+
         <div class="modal-header">
           <h5 class="modal-title" id="aggiornaModalLabel">Modifica Serie</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
+
         <div class="modal-body">
             <form class="needs-validation" id="form_aggiorna_serie">
-                <fieldset class="form-group">
-                    <div class="form-group">
-                        <label for="nome_modal">Nome</label>
-                        <input type="text" id="nome_modal" name="nome" class="form-control" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="descrizione_modal">Descrizione: </label>
-                        <textarea id="descrizione_modal" name="descrizione" class="form-control"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="tag_modal">Tags: </label>
-                        <input type="text" name="tag" id="tag_modal" class="form-control">
-                        <small id="tagHelp" class="form-text text-muted">I tag devono essere di questo tipo: #tag</small>
-                    </div>
-                    <input type="hidden" id="id_modal" name="id" />
-                </fieldset>
+                <div class="form-group">
+                    <label for="nome_modal">Nome</label>
+                    <input type="text" id="nome_modal" name="nome" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="descrizione_modal">Descrizione: </label>
+                    <textarea id="descrizione_modal" name="descrizione" class="form-control"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="tag_modal">Tags: </label>
+                    <input type="text" name="tag" id="tag_modal" class="form-control">
+                    <small id="tagHelp" class="form-text text-muted">I tag devono essere di questo tipo: #tag</small>
+                </div>
+                <input type="hidden" id="id_modal" name="id" />
             </form>
         </div>
+
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="if (cambiamenti_effettuati) {location.reload();}">Chiudi</button>
           <button type="submit" class="btn btn-primary" form="form_aggiorna_serie">Modifica</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+<div class="modal fade" id="aggiungi_stagione" tabindex="-1" role="dialog" aria-labelledby="aggiungi_stagione_Label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <h5 class="modal-title" id="aggiungi_episodio_Label">Aggiungi una nuova Stagione</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+            <form id="form_aggiungi_stagione">
+                <div class="form-group">
+                    <label for="nome_stagione_modal">Nome</label>
+                    <input type="text" id="nome_stagione_modal" name="nome_stagione_modal" class="form-control" placeholder="Inserisci il nome dell stagione" required>
+                </div>
+                <div class="form-group">
+                    <label for="descrizione_stagione_modal">Descrizione: </label>
+                    <textarea id="descrizione_stagione_modal" name="descrizione_stagione_modal" class="form-control" placeholder="Inserisci una breve descrizione"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="tag_stagione_modal">Tags: </label>
+                    <input type="text" name="tag_stagione_modal" id="tag_stagione_modal" class="form-control" placeholder="#tag #qui">
+                    <small id="tagHelp" class="form-text text-muted">I tag devono essere di questo tipo: #tag</small>
+                </div>
+                <input type="hidden" id="serie_id_modal" name="serie_id_modal" />
+            </form>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="if (cambiamenti_effettuati) {location.reload();}">Chiudi</button>
+          <button type="submit" class="btn btn-primary" form="form_aggiungi_stagione">Aggiungi</button>
         </div>
       </div>
     </div>
@@ -102,64 +141,128 @@
                 contentType: "application/json",
 
                 success: function(response) {
-                    console.log(response);
                     serie = response.response;
-                    console.log(serie);
-                    console.log(serie.tag);
 
+                    // elementi della serie
                     $("#tag").text(serie.tag);
                     $("#descrizione").text(serie.descrizione);
                     $("#nome").text(serie.nome);
-
+                    
+                    // modal modifica serie
                     $("#id_modal").val(serie.id);
                     $("#tag_modal").val(serie.tag);
                     $("#nome_modal").val(serie.nome);
                     $("#descrizione_modal").val(serie.descrizione);
+                    
+                    // modal aggiungi stagione
+                    $("#serie_id_modal").val(serie.id);
 
+                    // POPOLA STAGIONI
+                    $.ajax({
+                        url: server_ip + '/stagione/' + serie.id,
+                        type: 'GET',
+                        contentType: "application/json",
 
+                        success: function(response) {
+                            stagioni = response.response;
+                            
+                            var box_stagione = $('#box_stagione');
+                            var table = $("<table></table>").attr('class', 'table table-hover table-striped');
+                            var tbody = $('<tbody></tbody>');
+                            stagioni.forEach(element => {
+                                var riga = $('<tr></tr>');
+                                var nome = $('<td></td>').text(element.nome);
+                                var descrizione = $('<td></td>').text(element.descrizione);
+                                var tag = $('<td></td>').text(element.tag);
 
+                                riga.append(nome, descrizione, tag);
+                                tbody.append(riga);
+                            });
+                            
+                            table.append(tbody);
+                            box_stagione.append(table);
+
+                        },
+
+                        error: function(error) {
+                            console.log(error);
+
+                        }  
+                    });
                 },
 
                 error: function(error) {
                     console.log(error);
 
-                }
-                    
+                }  
             });
+
+
         }
     )
 
     $("#form_aggiorna_serie").submit(
-            // evita l'invio del form alla pressione del bottone
-            // verra' gestito da AJAX
-            function(e) {
-                e.preventDefault();
-            }
-    
-        ).validate({
-            messages : {
-                nome: {
-                    required: "Inserisci questo campo !"
-                },
+        // evita l'invio del form alla pressione del bottone
+        // verra' gestito da AJAX
+        function(e) {
+            e.preventDefault();
+        }
+    ).validate({
+        messages : {
+            nome: {
+                required: "Inserisci questo campo !"
             },
-            submitHandler: function (form) {
-                $.ajax({
-                    url: server_ip + '/serie',
-                    type: 'PUT',
-                    data: $(form).serialize(),
+        },
 
-                    success: function(response) {
-                        cambiamenti_effettuati = true;
-                        alert(response.message);
-                    },
+        submitHandler: function (form) {
+            $.ajax({
+                url: server_ip + '/serie',
+                type: 'PUT',
+                data: $(form).serialize(),
 
-                    error: function(error) {
-                        alert(error.responseJSON.error);
-                    }
-                    
-                });
+                success: function(response) {
+                    cambiamenti_effettuati = true;
+                    alert(response.message);
+                },
+
+                error: function(error) {
+                    alert(error.responseJSON.error);
+                }
                 
-            }
-        });
+            });
+        }
+    });
+
+    $("#form_aggiungi_stagione").submit(
+        // evita l'invio del form alla pressione del bottone
+        // verra' gestito da AJAX
+        function(e) {
+            e.preventDefault();
+        }
+    ).validate({
+        messages : {
+            nome_stagione_modal: {
+                required: "Inserisci questo campo !"
+            },
+        },
+
+        submitHandler: function (form) {
+            $.ajax({
+                url: server_ip + '/stagione',
+                type: 'POST',
+                data: $(form).serialize(),
+
+                success: function(response) {
+                    cambiamenti_effettuati = true;
+                    alert(response.message);
+                },
+
+                error: function(error) {
+                    alert(error.responseJSON.error);
+                }
+                
+            });
+        }
+    });
 </script>
 {% endblock content %}
