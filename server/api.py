@@ -6,9 +6,11 @@ import json
 from werkzeug.utils import secure_filename
 import os
 
-@app.route('/test')
-def test():
-    return  send_from_directory(app.config['UPLOAD_FOLDER'], 'enduring value-rHj3NI2x7n0.mp4')
+@app.route('/play/<int:id>')
+def play_episodio(id):
+    episodio = Episodio.query.filter_by(id=id).first()
+
+    return send_from_directory(app.config['UPLOAD_FOLDER'], episodio.path)
 
 
 @app.route('/serie', methods=['GET'])
