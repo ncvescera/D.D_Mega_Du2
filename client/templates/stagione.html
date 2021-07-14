@@ -2,7 +2,7 @@
 {% block content %}
     <div class="row">
         <div class="col">
-            <h1>Dettagli Stagione</h1>
+            <h1>Modifica Stagione</h1>
             <br>
             <form id="modifica_stagione" class="needs-validation">
                 <div class="form-group">
@@ -26,6 +26,39 @@
         </div>
     </div>
 
+    <hr>
+
+    <div class="row">
+        <div class="col">
+            <h1>Aggiungi Episodio</h1>
+            <br>
+            <form id="aggiungi_episodio" class="needs-validation">
+                <div class="form-group">
+                    <label for="nome">Nome: </label>
+                    <input type="text" class="form-control" id="episodio_nome" name="nome" placeholder="Inserisci il nome dell'episodio" required>
+                </div>
+                <div class="form-group">
+                    <label for="descrizione">Descrizione: </label>
+                    <textarea class="form-control" id="episodio_descrizione" name="descrizione" placeholder="Inserisci una breve descrizione dell'episodio"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="tag">Tag: </label>
+                    <input type="text" class="form-control" id="episodio_tag" name="tag" placeholder="Inserisci i tag">
+                    <small id="tagHelp" class="form-text text-muted">I tag devono essere di questo tipo: #tag</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="episodio_file">Scegli il file: </label>
+                    <input type="file" class="form-control" id="episodio_file" name="file" required>
+                </div>
+
+                <input type="hidden" id="episodio_stagione_id" name="stagione_id" value="{{stagione_id}}">
+                
+                <button class="btn btn-success">Aggiungi</button>
+            </form>
+        </div>
+    </div>
+    <br>
     <script>
         $(document).ready(
             function() {
@@ -79,6 +112,47 @@
                     error: function(error) {
                         alert(error.responseJSON.error);
                     }
+                    
+                });
+                
+            }
+        });
+
+        $("#aggiungi_episodio").submit(
+            // evita l'invio del form alla pressione del bottone
+            // verra' gestito da AJAX
+            function(e) {
+                e.preventDefault();
+            }
+    
+        ).validate({
+            messages : {
+                nome: {
+                    required: "Inserisci questo campo !"
+                },
+                file: {
+                    required: "Devi scegliere un file !"
+                },
+            },
+            submitHandler: function (form) {
+                var formData = new FormData(form);
+
+                $.ajax({
+                    url: server_ip + '/episodio',
+                    type: 'POST',
+                    data: formData,
+
+                    success: function(response) {
+                        alert(response.message);
+                        //location.reload();
+                    },
+
+                    error: function(error) {
+                        alert(error.responseJSON.error);
+                    },
+
+                    contentType: false,
+                    processData: false
                     
                 });
                 

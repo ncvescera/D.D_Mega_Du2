@@ -190,3 +190,47 @@ def update_stagione():
             return jsonify({'error': 'Impossibile aggiornare i dati !'}), 400
         
     return jsonify({'error': 'Stagione inesistente !'}),400
+
+
+## --- EPISODI --- ##
+
+@app.route('/episodio', methods=['POST'])
+@cross_origin()
+def add_episodio():
+    nome = request.form['nome']
+    descrizione = request.form['descrizione']
+    tag = request.form['tag']
+    stagione_id = request.form['stagione_id']
+    file = request.files['file']
+
+    existing_episodio = Episodio.query.filter_by(nome=nome, stagione_id=stagione_id).first()
+
+    if existing_episodio:
+        return jsonify({"error": "L'episodio esiste già !"}), 400
+    else:
+        # controlli su file
+        if file.filename == '':
+                return jsonify({'error': 'File non immesso !'}), 400
+
+        # cambio del nome del file per essere salvato
+        serie_id = Stagione.query.filter_by(id=stagione_id).first().serie_id
+        filename = secure_filename(file.filename)
+
+        new_nome = f"{serie_id}_{stagione_id}_{nome.replace(' ', '_')}"
+        ext = filename.split('.')[-1]
+        new_filename = f"{new_nome}.{ext}"
+
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], new_filename)
+
+        # creazione nuovo episodio
+        new_episodio = Episodio(nome=nome, descrizione=descrizione, tag=tag, stagione_id=stagione_id, path=new_filename)
+
+        try:
+            db.session.add(new_episodio)    # aggiunge al db il nuovo episodio
+            file.save(file_path)            # salva il file su disco
+            db.session.commit()             # salva le modifiche nel db
+
+            return jsonify({"message": f"Episodio {nome} aggiunto con successo !"}), 200
+
+        except:
+            return jsonify({"error": "Impossibile aggiungere l'episodio :/"}), 401
