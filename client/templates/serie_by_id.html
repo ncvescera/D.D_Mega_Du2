@@ -198,23 +198,58 @@
                                                     )
                                             )
                                         ),
-
-                                    $('<div class="collapse show" data-parent="#accordion">')
-                                        .attr('id', 'collapse'+ element.id)
-                                        .attr('aria-labelledby', 'heading'+element.id)
-                                        .append(
-                                            $('<div class="card-body">')
-                                                .append(
-                                                    $('<p>')
-                                                        .attr('style', 'color: blue;')
-                                                        .text(element.tag),
-                                                    $('<p>')
-                                                        .text(element.descrizione)
-                                                
-                                            )
-                                    )
                                 );
+                                
+                                var card_collapse = $('<div class="collapse show" data-parent="#accordion">')
+                                    .attr('id', 'collapse'+ element.id)
+                                    .attr('aria-labelledby', 'heading'+element.id)
+                                    .append(
+                                        
+                                    )
 
+                                var card_body = $('<div class="card-body">')
+                                    .append(
+                                        $('<p>')
+                                            .attr('style', 'color: blue;')
+                                            .text(element.tag),
+                                        $('<p>')
+                                            .text(element.descrizione)
+                                    )
+                                
+                                // popola ogni card_body con la tabella degli episodi
+                                $.ajax({
+                                    url: server_ip + '/episodii_of/'+ element.id,
+                                    type: 'GET',
+                                    
+                                    success: function (response) {
+                                        episodi = response.response;
+
+                                        var table = $("<table>").attr('class', 'table table-hover table-striped');
+                                        var tbody = $('<tbody>');
+
+                                        episodi.forEach(element => {
+                                            var riga = $('<tr>');
+                                                var nome = $('<td>').text(element.nome);
+                                                var descrizione = $('<td>').text(element.descrizione);
+                                                var tag = $('<td class="tag">').text(element.tag);
+
+                                                riga.append(nome, descrizione, tag);
+                                                tbody.append(riga);
+                                            
+                                        });
+                                        table.append(tbody);
+                                        box_stagione.append(table);
+
+                                        card_body.append(table);
+                                    },
+
+                                    error: function (error) {
+                                        alert(error.responseJSON.error);
+                                    }
+
+                                });
+
+                                tmp.append(card_collapse.append(card_body))
                                 box_stagione.append(
                                     tmp,
                                     $('<p>')

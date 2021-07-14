@@ -42,3 +42,13 @@ class Episodio(db.Model):
     path = db.Column(db.String(100), unique=True ,nullable=False)
     stagione_id = db.Column(db.Integer, db.ForeignKey('stagione.id'), nullable=False)
     __table_args__ = (db.UniqueConstraint('nome', 'stagione_id', name='_episodio_uc'),)
+
+    def as_dict(self):
+        return {
+            'id': self.id,
+            'nome': str(self.nome),
+            'descrizione': str(self.descrizione),
+            'tag': str(self.tag),
+            'path': str(self.path),
+            'stagione_id': self.stagione_id
+        }
