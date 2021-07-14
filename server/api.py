@@ -78,8 +78,6 @@ def rimuovi_serie(id):
 @app.route('/serie', methods=['PUT'])
 @cross_origin()
 def aggiorna_serie():
-    print(request.form)
-    print(request.json)
     nome = request.form['nome']
     descrizione = request.form['descrizione']
     tag = request.form['tag']
@@ -140,6 +138,16 @@ def stagioni_by_serie(serie_id):
     return jsonify({"response": stagioni_json}), 200
 
 
+@app.route('/stagione/<int:id>', methods=['GET'])
+@cross_origin()
+def get_stagione(id):
+    stagione = Stagione.query.filter_by(id=id).first()
+
+    stagione_json = stagione.as_dict()
+
+    return jsonify({'response': stagione_json}), 200
+
+
 @app.route('/stagione/<int:id>', methods=['DELETE'])
 @cross_origin()
 def delete_stagione(id):
@@ -157,3 +165,28 @@ def delete_stagione(id):
             return jsonify({'error': 'Impossibile eliminare la stagione !'}), 400
 
     return jsonify({'error': 'La stagione non esiste !'}), 400
+
+
+@app.route('/stagione', methods=['PUT'])
+@cross_origin()
+def update_stagione():
+    nome = request.form['nome']
+    descrizione = request.form['descrizione']
+    tag = request.form['tag']
+    id = request.form['id']
+
+    to_update = Stagione.query.filter_by(id=id).first()
+    if to_update:
+        to_update.nome = nome
+        to_update.descrizione = descrizione
+        to_update.tag = tag
+
+        try:
+            db.session.commit()
+
+            return jsonify({'message': 'Stagione aggiornata con successo !'}), 200
+
+        except:
+            return jsonify({'error': 'Impossibile aggiornare i dati !'}), 400
+        
+    return jsonify({'error': 'Stagione inesistente !'}),400

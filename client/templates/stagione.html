@@ -1,0 +1,88 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="row">
+        <div class="col">
+            <h1>Dettagli Stagione</h1>
+            <br>
+            <form id="modifica_stagione" class="needs-validation">
+                <div class="form-group">
+                    <label for="nome">Nome: </label>
+                    <input type="text" class="form-control" id="nome" name="nome" required>
+                </div>
+                <div class="form-group">
+                    <label for="descrizione">Descrizione: </label>
+                    <textarea class="form-control" id="descrizione" name="descrizione" placeholder="Inserisci una breve descrizione della Stagione"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="tag">Tag: </label>
+                    <input type="text" class="form-control" id="tag" name="tag" placeholder="Inserisci i tag">
+                    <small id="tagHelp" class="form-text text-muted">I tag devono essere di questo tipo: #tag</small>
+                </div>
+                
+                <input type="hidden" id="stagione_id" name="id" value="{{stagione_id}}">
+                
+                <button class="btn btn-info">Aggiorna</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(
+            function() {
+                $.ajax({
+                    url: server_ip + '/stagione/{{stagione_id}}',
+                    type: 'GET',
+                    contentType: "application/json",
+
+                    success: function(response) {
+                        stagione = response.response;
+                        console.log(stagione);
+                        
+                        $('#descrizione').val(stagione.descrizione);
+                        $('#tag').val(stagione.tag);
+                        $('#nome').val(stagione.nome);
+                    },
+
+                    error: function(error) {
+                        console.log(error);
+
+                    }
+                    
+                });
+            }
+        );
+
+        $("#modifica_stagione").submit(
+            // evita l'invio del form alla pressione del bottone
+            // verra' gestito da AJAX
+            function(e) {
+                e.preventDefault();
+            }
+    
+        ).validate({
+            messages : {
+                nome: {
+                    required: "Inserisci questo campo !"
+                },
+            },
+            submitHandler: function (form) {
+                $.ajax({
+                    url: server_ip + '/stagione',
+                    type: 'PUT',
+                    data: $(form).serialize(),
+
+                    success: function(response) {
+                        alert(response.message);
+                        location.reload();
+                    },
+
+                    error: function(error) {
+                        alert(error.responseJSON.error);
+                    }
+                    
+                });
+                
+            }
+        });
+    </script>
+{% endblock content %}
