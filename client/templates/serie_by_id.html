@@ -46,7 +46,7 @@
                     </button>
                 </p>
 
-                <div id="accordion"></div>
+                <div class="accordion" id="accordion"></div>
             </p>
         </div>
     </div>
@@ -177,8 +177,9 @@
                                                     .append(
                                                         $('<h5>')
                                                             .append(
-                                                                $('<button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">')
+                                                                $('<button class="btn btn-link" data-toggle="collapse" aria-expanded="false">')
                                                                     .attr('data-target', '#collapse'+element.id)
+                                                                    .attr('aria-controls', 'collapse'+element.id)
                                                                     .text(element.nome)
                                                             )
                                                     ),
