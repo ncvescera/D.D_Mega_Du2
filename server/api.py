@@ -5,6 +5,8 @@ from models import *
 import json
 from werkzeug.utils import secure_filename
 import os
+from natsort import natsorted, ns
+
 
 @app.route('/play/<int:id>')
 def play_episodio(id):
@@ -135,6 +137,8 @@ def add_stagione():
 def stagioni_by_serie(serie_id):
     stagioni = Stagione.query.filter_by(serie_id=serie_id)
 
+    stagioni = natsorted(stagioni, key=lambda x: x.nome)  # ordina le stagioni in base al nome
+    
     stagioni_json = [x.as_dict() for x in stagioni]
 
     return jsonify({"response": stagioni_json}), 200
@@ -242,6 +246,8 @@ def add_episodio():
 @cross_origin()
 def episodi_by_stagione(id):
     episodi = Episodio.query.filter_by(stagione_id=id).all()
+
+    episodi = natsorted(episodi, key=lambda x: x.nome)  # ordina le stagioni in base al nome
 
     episodi_json = [x.as_dict() for x in episodi]
 
