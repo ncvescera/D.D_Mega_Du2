@@ -10,3 +10,8 @@
 .tag {
     color: blue;
 }
+
+.rigthalign {
+    text-align: right;
+    margin-right: 1em;
+}
