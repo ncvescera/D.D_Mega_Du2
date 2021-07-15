@@ -52,7 +52,8 @@
     </div>
 </div>
 
-<!-- MODAL -->
+<!-- SEZIONE MODAL -->
+<!-- MODAL MODIFICARE SERIE-->
 <div class="modal fade" id="aggiorna_modal" tabindex="-1" role="dialog" aria-labelledby="aggiornaModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -91,6 +92,7 @@
     </div>
 </div>
 
+<!-- MODAL AGGIUNGI STAGIONE-->
 <div class="modal fade" id="aggiungi_stagione" tabindex="-1" role="dialog" aria-labelledby="aggiungi_stagione_Label" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
@@ -123,7 +125,52 @@
 
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="if (cambiamenti_effettuati) {location.reload();}">Chiudi</button>
-          <button type="submit" class="btn btn-primary" form="form_aggiungi_stagione">Aggiungi</button>
+          <button type="submit" class="btn btn-success" form="form_aggiungi_stagione">Aggiungi</button>
+        </div>
+      </div>
+    </div>
+</div>
+
+<!-- MODAL AGGIUNGI EPISODIO -->
+<div class="modal fade" id="aggiungi_episodio" tabindex="-1" role="dialog" aria-labelledby="aggiungi_episodio_Label" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+
+        <div class="modal-header">
+          <h5 class="modal-title" id="aggiungi_episodio_Label">Aggiungi un nuovo Episodio</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <div class="modal-body">
+            <form id="form_aggiungi_episodio" class="needs-validation">
+                <div class="form-group">
+                    <label for="episodio_nome">Nome: </label>
+                    <input type="text" class="form-control" id="episodio_nome" name="nome" placeholder="Inserisci il nome dell'episodio" required>
+                </div>
+                <div class="form-group">
+                    <label for="episodio_descrizione">Descrizione: </label>
+                    <textarea class="form-control" id="episodio_descrizione" name="descrizione" placeholder="Inserisci una breve descrizione dell'episodio"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="episodio_tag">Tag: </label>
+                    <input type="text" class="form-control" id="episodio_tag" name="tag" placeholder="Inserisci i tag">
+                    <small id="tagHelp" class="form-text text-muted">I tag devono essere di questo tipo: #tag</small>
+                </div>
+                
+                <div class="form-group">
+                    <label for="episodio_file">Scegli il file: </label>
+                    <input type="file" class="form-control" id="episodio_file" name="file" required>
+                </div>
+
+                <input type="hidden" id="episodio_stagione_id" name="stagione_id">
+            </form>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="if (cambiamenti_effettuati) {location.reload();}">Chiudi</button>
+          <button type="submit" class="btn btn-success" form="form_aggiungi_episodio">Aggiungi</button>
         </div>
       </div>
     </div>
@@ -132,6 +179,7 @@
 <script>
     var cambiamenti_effettuati = false; // variabile per vedere se serve riaggiornare il contenuto della pagina
 
+    // popola il contenuto del body
     $(document).ready(
         function() {
             $.ajax({
@@ -156,7 +204,7 @@
                     // modal aggiungi stagione
                     $("#serie_id_modal").val(serie.id);
 
-                    // POPOLA STAGIONI
+                    //--- POPOLA STAGIONI ---//
                     $.ajax({
                         url: server_ip + '/stagioni_of/' + serie.id,
                         type: 'GET',
@@ -169,11 +217,11 @@
 
                             stagioni.forEach(element => {
                                 var tmp = $('<div class="card">').append(
-                                    $('<div class="card-header">')
+                                    $('<div class="card-header">')          // CARD HEADER
                                         .attr('id', 'heading'+element.id)
                                         .append(
-                                            $('<div class="row">').append(
-                                                $('<div class="col-md-10">')
+                                            $('<div class="row">').append(      // CONTENUTO CARD HEADER
+                                                $('<div class="col-md-10">')    // Colonna 1
                                                     .append(
                                                         $('<h5>')
                                                             .append(
@@ -183,8 +231,14 @@
                                                                     .text(element.nome)
                                                             )
                                                     ),
-                                                $('<div class="col-md-2">')
+                                                $('<div class="col-md-2">')     // Colonna 2
                                                     .append(
+                                                        $('<button class="btn btn-sm btn-success" data-toggle="modal" data-target="#aggiungi_episodio">')   // bottone aggiungi episodio
+                                                            .attr('onclick', '$("#episodio_stagione_id").val('+element.id+');')
+                                                            .html(
+                                                                $('<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16"><path d="M8 0a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2H9v6a1 1 0 1 1-2 0V9H1a1 1 0 0 1 0-2h6V1a1 1 0 0 1 1-1z"/></svg>')
+                                                            ),
+                                                        $('<span>').text(' '),
                                                         $('<a class="btn btn-sm btn-primary">')    // bottone modifica stagione
                                                             .attr('href', '/stagione/'+element.id)
                                                             .html(
@@ -201,6 +255,7 @@
                                         ),
                                 );
                                 
+                                // body collassabile
                                 var card_collapse = $('<div class="collapse show" data-parent="#accordion">')
                                     .attr('id', 'collapse'+ element.id)
                                     .attr('aria-labelledby', 'heading'+element.id)
@@ -208,7 +263,7 @@
                                         
                                     )
 
-                                var card_body = $('<div class="card-body">')
+                                var card_body = $('<div class="card-body">')    // CARD BODY
                                     .append(
                                         $('<p>')
                                             .attr('style', 'color: blue;')
@@ -216,7 +271,8 @@
                                         $('<p>')
                                             .text(element.descrizione)
                                     )
-                                
+
+                                //--- POPOLA EPISODI ---//
                                 // popola ogni card_body con la tabella degli episodi
                                 $.ajax({
                                     url: server_ip + '/episodii_of/'+ element.id,
@@ -264,23 +320,6 @@
                                     $('<p>')
                                 );
                             });
-                            /*
-                            var box_stagione = $('#box_stagione');
-                            var table = $("<table></table>").attr('class', 'table table-hover table-striped');
-                            var tbody = $('<tbody></tbody>');
-                            stagioni.forEach(element => {
-                                var riga = $('<tr></tr>');
-                                var nome = $('<td></td>').text(element.nome);
-                                var descrizione = $('<td></td>').text(element.descrizione);
-                                var tag = $('<td></td>').text(element.tag);
-
-                                riga.append(nome, descrizione, tag);
-                                tbody.append(riga);
-                            });
-                            
-                            table.append(tbody);
-                            box_stagione.append(table);
-                            */
                         },
 
                         error: function(error) {
@@ -299,7 +338,8 @@
 
         }
     )
-
+    
+    //*** GESTIONE FORM PER AGGIORNA EPISODIO ***//
     $("#form_aggiorna_serie").submit(
         // evita l'invio del form alla pressione del bottone
         // verra' gestito da AJAX
@@ -332,6 +372,7 @@
         }
     });
 
+    //*** GESTIONE FORM PER AGGIUNGI STAGIONE ***//
     $("#form_aggiungi_stagione").submit(
         // evita l'invio del form alla pressione del bottone
         // verra' gestito da AJAX
@@ -363,5 +404,48 @@
             });
         }
     });
+
+    //*** GESTIONE FORM PER AGGIUNGI EPISODIO ***//
+    $("#form_aggiungi_episodio").submit(
+            // evita l'invio del form alla pressione del bottone
+            // verra' gestito da AJAX
+            function(e) {
+                e.preventDefault();
+            }
+    
+        ).validate({
+            messages : {
+                nome: {
+                    required: "Inserisci questo campo !"
+                },
+                file: {
+                    required: "Devi scegliere un file !"
+                },
+            },
+            submitHandler: function (form) {
+                var formData = new FormData(form);
+
+                $.ajax({
+                    url: server_ip + '/episodio',
+                    type: 'POST',
+                    data: formData,
+
+                    success: function(response) {
+                        
+                        alert(response.message);
+                        cambiamenti_effettuati = true;
+                    },
+
+                    error: function(error) {
+                        alert(error.responseJSON.error);
+                    },
+
+                    contentType: false,
+                    processData: false
+                    
+                });
+                
+            }
+        });
 </script>
 {% endblock content %}
