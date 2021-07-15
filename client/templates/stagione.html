@@ -30,32 +30,34 @@
 
     <div class="row">
         <div class="col">
-            <h1>Aggiungi Episodio</h1>
+            <a class="btn btn-success btn-block" data-toggle="collapse" href="#collassabile" role="button" aria-expanded="false" aria-controls="collassabile"><h2>Aggiungi Episodio</h2></a>
             <br>
-            <form id="aggiungi_episodio" class="needs-validation">
-                <div class="form-group">
-                    <label for="episodio_nome">Nome: </label>
-                    <input type="text" class="form-control" id="episodio_nome" name="nome" placeholder="Inserisci il nome dell'episodio" required>
-                </div>
-                <div class="form-group">
-                    <label for="episodio_descrizione">Descrizione: </label>
-                    <textarea class="form-control" id="episodio_descrizione" name="descrizione" placeholder="Inserisci una breve descrizione dell'episodio"></textarea>
-                </div>
-                <div class="form-group">
-                    <label for="episodio_tag">Tag: </label>
-                    <input type="text" class="form-control" id="episodio_tag" name="tag" placeholder="Inserisci i tag">
-                    <small id="tagHelp" class="form-text text-muted">I tag devono essere di questo tipo: #tag</small>
-                </div>
-                
-                <div class="form-group">
-                    <label for="episodio_file">Scegli il file: </label>
-                    <input type="file" class="form-control" id="episodio_file" name="file" required>
-                </div>
+            <div class="collapse" id="collassabile">
+                <form id="aggiungi_episodio" class="needs-validation">
+                    <div class="form-group">
+                        <label for="episodio_nome">Nome: </label>
+                        <input type="text" class="form-control" id="episodio_nome" name="nome" placeholder="Inserisci il nome dell'episodio" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="episodio_descrizione">Descrizione: </label>
+                        <textarea class="form-control" id="episodio_descrizione" name="descrizione" placeholder="Inserisci una breve descrizione dell'episodio"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="episodio_tag">Tag: </label>
+                        <input type="text" class="form-control" id="episodio_tag" name="tag" placeholder="Inserisci i tag">
+                        <small id="tagHelp" class="form-text text-muted">I tag devono essere di questo tipo: #tag</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="episodio_file">Scegli il file: </label>
+                        <input type="file" class="form-control" id="episodio_file" name="file" required>
+                    </div>
 
-                <input type="hidden" id="episodio_stagione_id" name="stagione_id" value="{{stagione_id}}">
-                
-                <button class="btn btn-success">Aggiungi</button>
-            </form>
+                    <input type="hidden" id="episodio_stagione_id" name="stagione_id" value="{{stagione_id}}">
+                    
+                    <button class="btn btn-success">Aggiungi</button>
+                </form>
+            </div>
         </div>
     </div>
     <br>
