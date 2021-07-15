@@ -238,7 +238,7 @@ def add_episodio():
             return jsonify({"error": "Impossibile aggiungere l'episodio :/"}), 401
 
 
-@app.route('/episodii_of/<int:id>', methods=['GET'])
+@app.route('/episodi_of/<int:id>', methods=['GET'])
 @cross_origin()
 def episodi_by_stagione(id):
     episodi = Episodio.query.filter_by(stagione_id=id).all()
