@@ -266,3 +266,13 @@ def delete_episodio(id):
             return jsonify({'error': 'Impossibile eliminare l\'episodio !'}), 400
 
     return jsonify({'error': 'L\'episodio non esiste !'}), 400
+
+
+@app.route('/episodio/<int:id>', methods=['GET'])
+@cross_origin()
+def get_episodio(id):
+    episodio = Episodio.query.filter_by(id=id).first()
+
+    episodio_json = episodio.as_dict()
+
+    return jsonify({'response': episodio_json}), 200
