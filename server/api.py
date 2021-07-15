@@ -282,3 +282,45 @@ def get_episodio(id):
     episodio_json = episodio.as_dict()
 
     return jsonify({'response': episodio_json}), 200
+
+
+@app.route('/episodio', methods=['PUT'])
+@cross_origin()
+def update_episodio():
+    nome = request.form['nome']
+    descrizione = request.form['descrizione']
+    tag = request.form['tag']
+    file = request.files['file']
+    id = request.form['id']
+    file_path = ''
+
+    to_update = Episodio.query.filter_by(id=id).first()
+    if to_update:
+        to_update.nome = nome
+        to_update.descrizione = descrizione
+        to_update.tag = tag
+
+        # carica e salva il nuovo file
+        stagione_id = to_update.stagione_id
+        if file.filename != '':
+            serie_id = Stagione.query.filter_by(id=stagione_id).first().serie_id
+            filename = secure_filename(file.filename)
+
+            new_nome = f"{serie_id}_{stagione_id}_{nome.replace(' ', '_')}"
+            ext = filename.split('.')[-1]
+            new_filename = f"{new_nome}.{ext}"
+
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], new_filename)
+
+        try:
+            if file_path != '':
+                file.save(file_path)
+
+            db.session.commit()
+
+            return jsonify({'message': 'Episodio aggiornato con successo !'}), 200
+
+        except:
+            return jsonify({'error': 'Impossibile aggiornare i dati !'}), 400
+        
+    return jsonify({'error': 'Episodio inesistente !'}),400

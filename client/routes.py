@@ -23,3 +23,7 @@ def add_serie():
 @app.route('/stagione/<int:id>', methods=['GET'])
 def stagione(id):
     return render_template('stagione.html', stagione_id=id)
+
+@app.route('/episodio/<int:id>', methods=['GET'])
+def episodio(id):
+    return render_template('episodio.html', episodio_id=id)
