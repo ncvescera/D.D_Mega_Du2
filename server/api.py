@@ -123,8 +123,6 @@ def delete_serie(id):
     (identificata univocamente dal campo ID)
     """
 
-    #TODO: eliminare a cascata gli episodi e le stagioni !!!
-
     # controlla se la serie esiste nel database
     to_remove = Serie.query.filter_by(id=id).first()
     if to_remove:
@@ -132,14 +130,16 @@ def delete_serie(id):
             db.session.delete(to_remove)
             db.session.commit()
 
+            # elimina tutte le stagioni appartenenti alla serie
+            stagioni_to_remove = Stagione.query.filter_by(serie_id=id).all()
+            for stagione in stagioni_to_remove:
+                delete_stagione(stagione.id)
+
             return jsonify({'message': 'Serie eliminata !'}), 200
         except:
             return jsonify({'error': 'Impossibile eliminare la serie !'}), 400
 
     return jsonify({'error': 'La serie non esiste !'}), 400
-
-
-
 
 
 ## ----------------------- STAGIONI ----------------------- ##
@@ -250,14 +250,17 @@ def delete_stagione(id):
     Elimina una data stagione
     """
 
-    #TODO: eliminare a cascata tutti gli episodi appartenenti alla stagione
-
     # controlla se la stagione esiste
     to_remove = Stagione.query.filter_by(id=id).first()
     if to_remove:
         try:
             db.session.delete(to_remove)
             db.session.commit()
+
+            # elimina tutti gli episodi appartenenti alla stagione
+            episodi_to_remove = Episodio.query.filter_by(stagione_id=id).all()
+            for episodio in episodi_to_remove:
+                delete_episodio(episodio.id)
 
             return jsonify({'message': 'Stagione eliminata !'}), 200
         except:
