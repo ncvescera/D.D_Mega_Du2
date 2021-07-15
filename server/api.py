@@ -1,13 +1,13 @@
 from flask import request, send_from_directory, jsonify
 from flask_cors import cross_origin
+from werkzeug.utils import secure_filename
+from natsort import natsorted, ns
 from app import *
 from models import *
-import json
-from werkzeug.utils import secure_filename
+from utils import *
 import os
-from natsort import natsorted, ns
 
-
+## ----------------------- PLAY EPISODIO ----------------------- ##
 @app.route('/play/<int:id>')
 def play_episodio(id):
     episodio = Episodio.query.filter_by(id=id).first()
@@ -15,12 +15,17 @@ def play_episodio(id):
     return send_from_directory(app.config['UPLOAD_FOLDER'], episodio.path)
 
 
+## ----------------------- SERIE ----------------------- ##
 @app.route('/serie', methods=['GET'])
 @cross_origin()
 def all_serie():
+    """
+    Ritorna i dati di tutte le serie nel DB
+    """
+
     series = Serie.query.all()
 
-    series_json = [x.as_dict() for x in series] # trasforma ogni serie in dizionario per essere convertito in json
+    series_json = [x.as_dict() for x in series]     # trasforma ogni serie in dizionario per essere convertito in json
 
     return jsonify({"response": series_json}), 200
 
@@ -28,6 +33,11 @@ def all_serie():
 @app.route('/serie/<int:id>', methods=['GET'])
 @cross_origin()
 def get_serie(id):
+    """
+    Ritorna i dati di una specifica serie 
+    (identificatata univocamente dal campo ID)
+    """
+
     serie = Serie.query.filter_by(id=id).first()
 
     serie_json = serie.as_dict()
@@ -38,16 +48,26 @@ def get_serie(id):
 @app.route('/serie', methods=['POST'])
 @cross_origin()
 def add_serie():
+    """
+    Aggiunge una nuova serie con i dati passati
+    """
+
     # prende i dati del form  
     nome            = request.form['nome']
     descrizione     = request.form['descrizione']
     tag             = request.form['tag']
     
-    existing_serie = Serie.query.filter_by(nome=nome).first()
+    # controlla che i dati necessari siano inseriti
+    if not check_required_data((nome,)):
+        return jsonify({"error": "Inserisci tutti i dati necessari !"}), 400
 
+    # controlla se esiste gia' una serie con gli stessi dati
+    existing_serie = Serie.query.filter_by(nome=nome).first()
     if existing_serie:
         return jsonify({"error": "La serie esiste già !"}), 400
+
     else:
+        # aggiunge la nuova serie
         new_serie = Serie(nome=nome, descrizione=descrizione, tag=tag)
 
         try:
@@ -60,33 +80,24 @@ def add_serie():
             return jsonify({"error": "Impossibile aggiungere la serie :/"}), 401
 
 
-@app.route('/serie/<int:id>', methods=['DELETE'])
-@cross_origin()
-def rimuovi_serie(id):
-    #TODO: eliminare a cascata gli episodi e le stagioni !!!
-
-    to_remove = Serie.query.filter_by(id=id).first()
-
-    if to_remove:
-        try:
-            db.session.delete(to_remove)
-            db.session.commit()
-
-            return jsonify({'message': 'Serie eliminata !'}), 200
-        except:
-            return jsonify({'error': 'Impossibile eliminare la serie !'}), 400
-
-    return jsonify({'error': 'La serie non esiste !'}), 400
-
-
 @app.route('/serie', methods=['PUT'])
 @cross_origin()
 def aggiorna_serie():
+    """
+    Aggiorna i dati di una serie esistente
+    (identificata univocamente dal campo ID)
+    """
+
     nome = request.form['nome']
     descrizione = request.form['descrizione']
     tag = request.form['tag']
     id = request.form['id']
 
+    # controlla che i dati necessari siano inseriti
+    if not check_required_data((nome, id,)):
+        return jsonify({"error": "Inserisci tutti i dati necessari !"}), 400
+
+    # controlla se la serie esiste
     to_update = Serie.query.filter_by(id=id).first()
     if to_update:
         to_update.nome = nome
@@ -104,22 +115,88 @@ def aggiorna_serie():
     return jsonify({'error': 'Serie inesistente !'}),400
 
 
-## --- STAGIONI --- ##
+@app.route('/serie/<int:id>', methods=['DELETE'])
+@cross_origin()
+def delete_serie(id):
+    """
+    Elimina una serie
+    (identificata univocamente dal campo ID)
+    """
+
+    #TODO: eliminare a cascata gli episodi e le stagioni !!!
+
+    # controlla se la serie esiste nel database
+    to_remove = Serie.query.filter_by(id=id).first()
+    if to_remove:
+        try:
+            db.session.delete(to_remove)
+            db.session.commit()
+
+            return jsonify({'message': 'Serie eliminata !'}), 200
+        except:
+            return jsonify({'error': 'Impossibile eliminare la serie !'}), 400
+
+    return jsonify({'error': 'La serie non esiste !'}), 400
+
+
+
+
+
+## ----------------------- STAGIONI ----------------------- ##
+@app.route('/stagione/<int:id>', methods=['GET'])
+@cross_origin()
+def get_stagione(id):
+    """
+    Ritorna i dati di una singola stagione
+    """
+
+    stagione = Stagione.query.filter_by(id=id).first()
+
+    stagione_json = stagione.as_dict()
+
+    return jsonify({'response': stagione_json}), 200
+
+
+@app.route('/stagioni_of/<int:serie_id>', methods=['GET'])
+@cross_origin()
+def stagioni_by_serie(serie_id):
+    """
+    Ritorna tutte le stagioni di una data serie
+    """
+
+    stagioni = Stagione.query.filter_by(serie_id=serie_id)
+
+    stagioni = natsorted(stagioni, key=lambda x: x.nome)  # ordina le stagioni in base al nome
+    
+    stagioni_json = [x.as_dict() for x in stagioni]
+
+    return jsonify({"response": stagioni_json}), 200
+
 
 @app.route('/stagione', methods=['POST'])
 @cross_origin()
 def add_stagione():
+    """
+    Aggiunge una Stagione ad una serie
+    """
+
     # prende i dati del form  
     nome            = request.form['nome']
     descrizione     = request.form['descrizione']
     tag             = request.form['tag']
     serie_id        = request.form['serie_id']
 
-    existing_stagione = Stagione.query.filter_by(nome=nome, serie_id=serie_id).first()
+    # controlla che i dati necessari siano inseriti
+    if not check_required_data((nome, serie_id,)):
+        return jsonify({"error": "Inserisci tutti i dati necessari !"}), 400
 
+    # controlla se esiste una stagione con gli stessi dati
+    existing_stagione = Stagione.query.filter_by(nome=nome, serie_id=serie_id).first()
     if existing_stagione:
         return jsonify({"error": "La stagione esiste già !"}), 400
+
     else:
+        # aggiunge la nuova stagione al DB
         new_stagione = Stagione(nome=nome, descrizione=descrizione, tag=tag, serie_id=serie_id)
 
         try:
@@ -132,55 +209,23 @@ def add_stagione():
             return jsonify({"error": "Impossibile aggiungere la stagione :/"}), 401
 
 
-@app.route('/stagioni_of/<int:serie_id>', methods=['GET'])
-@cross_origin()
-def stagioni_by_serie(serie_id):
-    stagioni = Stagione.query.filter_by(serie_id=serie_id)
-
-    stagioni = natsorted(stagioni, key=lambda x: x.nome)  # ordina le stagioni in base al nome
-    
-    stagioni_json = [x.as_dict() for x in stagioni]
-
-    return jsonify({"response": stagioni_json}), 200
-
-
-@app.route('/stagione/<int:id>', methods=['GET'])
-@cross_origin()
-def get_stagione(id):
-    stagione = Stagione.query.filter_by(id=id).first()
-
-    stagione_json = stagione.as_dict()
-
-    return jsonify({'response': stagione_json}), 200
-
-
-@app.route('/stagione/<int:id>', methods=['DELETE'])
-@cross_origin()
-def delete_stagione(id):
-    #TODO: eliminare a cascata tutti gli episodi appartenenti alla stagione
-
-    to_remove = Stagione.query.filter_by(id=id).first()
-
-    if to_remove:
-        try:
-            db.session.delete(to_remove)
-            db.session.commit()
-
-            return jsonify({'message': 'Stagione eliminata !'}), 200
-        except:
-            return jsonify({'error': 'Impossibile eliminare la stagione !'}), 400
-
-    return jsonify({'error': 'La stagione non esiste !'}), 400
-
-
 @app.route('/stagione', methods=['PUT'])
 @cross_origin()
 def update_stagione():
+    """
+    Aggiorna i dati di una stagione
+    """
+
     nome = request.form['nome']
     descrizione = request.form['descrizione']
     tag = request.form['tag']
     id = request.form['id']
 
+    # controlla che i dati necessari siano inseriti
+    if not check_required_data((nome, id,)):
+        return jsonify({"error": "Inserisci tutti i dati necessari !"}), 400
+
+    # controlla che la stagione esista nel DB
     to_update = Stagione.query.filter_by(id=id).first()
     if to_update:
         to_update.nome = nome
@@ -198,53 +243,51 @@ def update_stagione():
     return jsonify({'error': 'Stagione inesistente !'}),400
 
 
-## --- EPISODI --- ##
-
-@app.route('/episodio', methods=['POST'])
+@app.route('/stagione/<int:id>', methods=['DELETE'])
 @cross_origin()
-def add_episodio():
-    nome = request.form['nome']
-    descrizione = request.form['descrizione']
-    tag = request.form['tag']
-    stagione_id = request.form['stagione_id']
-    file = request.files['file']
+def delete_stagione(id):
+    """
+    Elimina una data stagione
+    """
 
-    existing_episodio = Episodio.query.filter_by(nome=nome, stagione_id=stagione_id).first()
+    #TODO: eliminare a cascata tutti gli episodi appartenenti alla stagione
 
-    if existing_episodio:
-        return jsonify({"error": "L'episodio esiste già !"}), 400
-    else:
-        # controlli su file
-        if file.filename == '':
-                return jsonify({'error': 'File non immesso !'}), 400
-
-        # cambio del nome del file per essere salvato
-        serie_id = Stagione.query.filter_by(id=stagione_id).first().serie_id
-        filename = secure_filename(file.filename)
-
-        new_nome = f"{serie_id}_{stagione_id}_{nome.replace(' ', '_')}"
-        ext = filename.split('.')[-1]
-        new_filename = f"{new_nome}.{ext}"
-
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], new_filename)
-
-        # creazione nuovo episodio
-        new_episodio = Episodio(nome=nome, descrizione=descrizione, tag=tag, stagione_id=stagione_id, path=new_filename)
-
+    # controlla se la stagione esiste
+    to_remove = Stagione.query.filter_by(id=id).first()
+    if to_remove:
         try:
-            db.session.add(new_episodio)    # aggiunge al db il nuovo episodio
-            file.save(file_path)            # salva il file su disco
-            db.session.commit()             # salva le modifiche nel db
+            db.session.delete(to_remove)
+            db.session.commit()
 
-            return jsonify({"message": f"Episodio {nome} aggiunto con successo !"}), 200
-
+            return jsonify({'message': 'Stagione eliminata !'}), 200
         except:
-            return jsonify({"error": "Impossibile aggiungere l'episodio :/"}), 401
+            return jsonify({'error': 'Impossibile eliminare la stagione !'}), 400
+
+    return jsonify({'error': 'La stagione non esiste !'}), 400
+
+
+## ----------------------- EPISODI ----------------------- ##
+@app.route('/episodio/<int:id>', methods=['GET'])
+@cross_origin()
+def get_episodio(id):
+    """
+    Ritorna i dati del singolo episodio
+    """
+
+    episodio = Episodio.query.filter_by(id=id).first()
+
+    episodio_json = episodio.as_dict()
+
+    return jsonify({'response': episodio_json}), 200
 
 
 @app.route('/episodi_of/<int:id>', methods=['GET'])
 @cross_origin()
 def episodi_by_stagione(id):
+    """
+    Ritorna i dati di tutti gli episodi di una data stagione
+    """
+
     episodi = Episodio.query.filter_by(stagione_id=id).all()
 
     episodi = natsorted(episodi, key=lambda x: x.nome)  # ordina le stagioni in base al nome
@@ -254,39 +297,58 @@ def episodi_by_stagione(id):
     return jsonify({'response': episodi_json}), 200
 
 
-@app.route('/episodio/<int:id>', methods=['DELETE'])
+@app.route('/episodio', methods=['POST'])
 @cross_origin()
-def delete_episodio(id):
-    to_remove = Episodio.query.filter_by(id=id).first()
+def add_episodio():
+    """
+    Aggiunge un nuovo episodio
+    """
 
-    if to_remove:
-        file_path = file_path = os.path.join(app.config['UPLOAD_FOLDER'], to_remove.path)
+    nome = request.form['nome']
+    descrizione = request.form['descrizione']
+    tag = request.form['tag']
+    stagione_id = request.form['stagione_id']
+    file = request.files['file']
 
+    # controlla che i dati necessari siano inseriti
+    if not check_required_data((nome, stagione_id, file.filename,)):
+        return jsonify({"error": "Inserisci tutti i dati necessari !"}), 400
+
+    # controlla che non esista un episodio con gli stessi dati
+    existing_episodio = Episodio.query.filter_by(nome=nome, stagione_id=stagione_id).first()
+    if existing_episodio:
+        return jsonify({"error": "L'episodio esiste già !"}), 400
+
+    else:
+        # creazione nuovo episodio
+        new_episodio = Episodio(nome=nome, descrizione=descrizione, tag=tag, stagione_id=stagione_id, path='tmp')
         try:
-            db.session.delete(to_remove)
-            os.remove(file_path)
-            db.session.commit()
+            db.session.add(new_episodio)    # aggiunge al db il nuovo episodio
+            db.session.flush()              # aggiorna la sessione del db senza rendere permanenti i cambiamenti
+            
+            # crea il nuovo nome del file e il path dove andra' salvato
+            serie_id = Stagione.query.filter_by(id=stagione_id).first().serie_id
+            new_filename, file_path = process_file(file.filename, app.config['UPLOAD_FOLDER'], new_episodio.id, stagione_id=stagione_id, serie_id=serie_id)
 
-            return jsonify({'message': 'Episodio eliminato !'}), 200
+            new_episodio.path = new_filename    # aggiorna il path con il nuovo file_name
+            db.session.flush()                  # aggiorna la sessione del db
+
+            file.save(file_path)            # salva il file su disco
+            db.session.commit()             # salva le modifiche nel db
+
+            return jsonify({"message": f"Episodio {nome} aggiunto con successo !"}), 200
+
         except:
-            return jsonify({'error': 'Impossibile eliminare l\'episodio !'}), 400
-
-    return jsonify({'error': 'L\'episodio non esiste !'}), 400
-
-
-@app.route('/episodio/<int:id>', methods=['GET'])
-@cross_origin()
-def get_episodio(id):
-    episodio = Episodio.query.filter_by(id=id).first()
-
-    episodio_json = episodio.as_dict()
-
-    return jsonify({'response': episodio_json}), 200
+            return jsonify({"error": "Impossibile aggiungere l'episodio :/"}), 401
 
 
 @app.route('/episodio', methods=['PUT'])
 @cross_origin()
 def update_episodio():
+    """
+    Aggiorna i dati di un episodio esistente
+    """
+
     nome = request.form['nome']
     descrizione = request.form['descrizione']
     tag = request.form['tag']
@@ -294,25 +356,27 @@ def update_episodio():
     id = request.form['id']
     file_path = ''
 
+    # controlla che i dati necessari siano inseriti
+    if not check_required_data((nome, id,)):
+        return jsonify({"error": "Inserisci tutti i dati necessari !"}), 400
+
+    # controlla se l'episodio esiste
     to_update = Episodio.query.filter_by(id=id).first()
     if to_update:
         to_update.nome = nome
         to_update.descrizione = descrizione
         to_update.tag = tag
 
-        # carica e salva il nuovo file
-        stagione_id = to_update.stagione_id
+        # ottiene il file path che deve essere aggiornato con il nuovo file
         if file.filename != '':
+            stagione_id = to_update.stagione_id
             serie_id = Stagione.query.filter_by(id=stagione_id).first().serie_id
-            filename = secure_filename(file.filename)
 
-            new_nome = f"{serie_id}_{stagione_id}_{nome.replace(' ', '_')}"
-            ext = filename.split('.')[-1]
-            new_filename = f"{new_nome}.{ext}"
+            _, file_path = process_file(file.filename, app.config['UPLOAD_FOLDER'], id, stagione_id=stagione_id, serie_id=serie_id)
 
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], new_filename)
-
+        # modifica i dati dell'episodio
         try:
+            # se e' stato inserito salva il file
             if file_path != '':
                 file.save(file_path)
 
@@ -324,3 +388,30 @@ def update_episodio():
             return jsonify({'error': 'Impossibile aggiornare i dati !'}), 400
         
     return jsonify({'error': 'Episodio inesistente !'}),400
+
+
+@app.route('/episodio/<int:id>', methods=['DELETE'])
+@cross_origin()
+def delete_episodio(id):
+    """
+    Elimina un dato episodio
+    """
+
+    # controlla che l'episodio esista
+    to_remove = Episodio.query.filter_by(id=id).first()
+    if to_remove:
+        # ottiene il path del file da eliminare
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], to_remove.path)
+
+        # elimina dal db l'episodio e rimuove il file dal disco
+        try:
+            db.session.delete(to_remove)
+            os.remove(file_path)
+            db.session.commit()
+
+            return jsonify({'message': 'Episodio eliminato !'}), 200
+
+        except:
+            return jsonify({'error': 'Impossibile eliminare l\'episodio !'}), 400
+
+    return jsonify({'error': 'L\'episodio non esiste !'}), 400
