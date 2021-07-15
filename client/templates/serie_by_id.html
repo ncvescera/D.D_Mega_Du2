@@ -3,6 +3,7 @@
 <div class="container">
 
     <div class="card">
+
         <div class="card-header">
             <table style="width: 100;">
                 <tr style="width: 100%;">
@@ -18,6 +19,7 @@
                 </tr>
             </table>
         </div>
+
         <div class="card-body">
             <div class="row">
                 <div class="col-xl-10 col-md-9">
@@ -33,8 +35,11 @@
                     </button>
                 </div>
             </div>
+            
             <p class="card-text"><h4>Descrizione:</h4> <span id="descrizione"></span></p>
+
             <br>
+
             <p class="card-text">
                 <h2>Stagioni: </h2>
                 <p>
@@ -49,6 +54,7 @@
                 <div class="accordion" id="accordion"></div>
             </p>
         </div>
+
     </div>
 </div>
 
@@ -225,7 +231,7 @@
                                                     .append(
                                                         $('<h5>')
                                                             .append(
-                                                                $('<button class="btn btn-link" data-toggle="collapse" aria-expanded="false">')
+                                                                $('<button class="btn btn-link" data-toggle="collapse" aria-expanded="false">') // nome della stagione
                                                                     .attr('data-target', '#collapse'+element.id)
                                                                     .attr('aria-controls', 'collapse'+element.id)
                                                                     .text(element.nome)
@@ -265,10 +271,10 @@
 
                                 var card_body = $('<div class="card-body">')    // CARD BODY
                                     .append(
-                                        $('<p>')
+                                        $('<p>')                                // tags
                                             .attr('style', 'color: blue;')
                                             .text(element.tag),
-                                        $('<p>')
+                                        $('<p>')                                // descrizione
                                             .text(element.descrizione)
                                     )
 
@@ -291,7 +297,7 @@
                                             var tag = $('<td class="tag">').text(element.tag);
                                             var play = $('<td>')
                                                 .append(
-                                                    $('<a class="btn btn-sm btn-info" target="_blank">')
+                                                    $('<a class="btn btn-sm btn-info" target="_blank">')    // bottone PLAY
                                                         .attr('href', server_ip + '/play/' + element.id)
                                                         .html(
                                                             $('<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-play-circle" viewBox="0 0 16 16"><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445z"/></svg>')
