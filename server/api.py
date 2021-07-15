@@ -246,3 +246,23 @@ def episodi_by_stagione(id):
     episodi_json = [x.as_dict() for x in episodi]
 
     return jsonify({'response': episodi_json}), 200
+
+
+@app.route('/episodio/<int:id>', methods=['DELETE'])
+@cross_origin()
+def delete_episodio(id):
+    to_remove = Episodio.query.filter_by(id=id).first()
+
+    if to_remove:
+        file_path = file_path = os.path.join(app.config['UPLOAD_FOLDER'], to_remove.path)
+
+        try:
+            db.session.delete(to_remove)
+            os.remove(file_path)
+            db.session.commit()
+
+            return jsonify({'message': 'Episodio eliminato !'}), 200
+        except:
+            return jsonify({'error': 'Impossibile eliminare l\'episodio !'}), 400
+
+    return jsonify({'error': 'L\'episodio non esiste !'}), 400
