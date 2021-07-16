@@ -3,28 +3,29 @@
 <div class="container">
 
     <div class="card">
-
+        <!-- HEADER -->
         <div class="card-header">
-            <table style="width: 100;">
-                <tr style="width: 100%;">
-                    <td id="tag" style="width: 100%; color: blue;"></td>
-                    <td style="width: auto;">
-                        <button class="btn btn-danger btn-sm" onclick="elimina_serie({{serie_id}});">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
-                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"></path>
-                                <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"></path>
-                              </svg>
-                        </button>
-                    </td>
-                </tr>
-            </table>
+            <div class="row">
+                <div class="col-10 tag" id="tag"></div>
+                
+                <div class="col-2 rigthalign">
+                    <button class="btn btn-danger btn-sm" onclick="elimina_serie({{serie_id}});">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"></path>
+                            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"></path>
+                          </svg>
+                    </button>
+                </div>
+            </div>
         </div>
 
+        <!-- BODY -->
         <div class="card-body">
             <div class="row">
                 <div class="col-xl-10 col-md-9">
                     <h1 id="nome"></h1>
                 </div>
+
                 <div class="col-xl-2 col-md-3">
                     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#aggiorna_modal">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
@@ -36,7 +37,9 @@
                 </div>
             </div>
             
-            <p class="card-text"><h4>Descrizione:</h4> <span id="descrizione"></span></p>
+            <p class="card-text">
+                <h4>Descrizione:</h4> <span id="descrizione"></span>
+            </p>
 
             <br>
 
@@ -59,11 +62,12 @@
 </div>
 
 <!-- SEZIONE MODAL -->
-<!-- MODAL MODIFICARE SERIE-->
+<!-- MODAL MODIFICA SERIE-->
 <div class="modal fade" id="aggiorna_modal" tabindex="-1" role="dialog" aria-labelledby="aggiornaModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
 
+        <!-- MODAL HEADER -->
         <div class="modal-header">
           <h5 class="modal-title" id="aggiornaModalLabel">Modifica Serie</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -71,25 +75,30 @@
           </button>
         </div>
 
+        <!-- MODAL BODY -->
         <div class="modal-body">
             <form class="needs-validation" id="form_aggiorna_serie">
                 <div class="form-group">
                     <label for="nome_modal">Nome</label>
                     <input type="text" id="nome_modal" name="nome" class="form-control" required>
                 </div>
+
                 <div class="form-group">
                     <label for="descrizione_modal">Descrizione: </label>
                     <textarea id="descrizione_modal" name="descrizione" class="form-control"></textarea>
                 </div>
+                
                 <div class="form-group">
                     <label for="tag_modal">Tags: </label>
                     <input type="text" name="tag" id="tag_modal" class="form-control">
                     <small id="tagHelp" class="form-text text-muted">I tag devono essere di questo tipo: #tag</small>
                 </div>
+                
                 <input type="hidden" id="id_modal" name="id" />
             </form>
         </div>
 
+        <!-- MODAL FOOTER -->
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="if (cambiamenti_effettuati) {location.reload();}">Chiudi</button>
           <button type="submit" class="btn btn-primary" form="form_aggiorna_serie">Modifica</button>
@@ -103,6 +112,7 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
 
+        <!-- MODAL HEADER -->
         <div class="modal-header">
           <h5 class="modal-title" id="aggiungi_episodio_Label">Aggiungi una nuova Stagione</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -110,25 +120,30 @@
           </button>
         </div>
 
+        <!-- MODAL BODY -->
         <div class="modal-body">
             <form id="form_aggiungi_stagione">
                 <div class="form-group">
                     <label for="nome_stagione_modal">Nome</label>
                     <input type="text" id="nome_stagione_modal" name="nome" class="form-control" placeholder="Inserisci il nome dell stagione" required>
                 </div>
+
                 <div class="form-group">
                     <label for="descrizione_stagione_modal">Descrizione: </label>
                     <textarea id="descrizione_stagione_modal" name="descrizione" class="form-control" placeholder="Inserisci una breve descrizione"></textarea>
                 </div>
+                
                 <div class="form-group">
                     <label for="tag_stagione_modal">Tags: </label>
                     <input type="text" id="tag_stagione_modal" name="tag" class="form-control" placeholder="#tag #qui">
                     <small id="tagHelp" class="form-text text-muted">I tag devono essere di questo tipo: #tag</small>
                 </div>
+                
                 <input type="hidden" id="serie_id_modal" name="serie_id" />
             </form>
         </div>
-
+        
+        <!-- MODAL FOOTER -->
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="if (cambiamenti_effettuati) {location.reload();}">Chiudi</button>
           <button type="submit" class="btn btn-success" form="form_aggiungi_stagione">Aggiungi</button>
@@ -142,6 +157,7 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
 
+        <!-- MODAL HEADER -->
         <div class="modal-header">
           <h5 class="modal-title" id="aggiungi_episodio_Label">Aggiungi un nuovo Episodio</h5>
           <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -149,16 +165,19 @@
           </button>
         </div>
 
+        <!-- MODAL BODY -->
         <div class="modal-body">
             <form id="form_aggiungi_episodio" class="needs-validation">
                 <div class="form-group">
                     <label for="episodio_nome">Nome: </label>
                     <input type="text" class="form-control" id="episodio_nome" name="nome" placeholder="Inserisci il nome dell'episodio" required>
                 </div>
+
                 <div class="form-group">
                     <label for="episodio_descrizione">Descrizione: </label>
                     <textarea class="form-control" id="episodio_descrizione" name="descrizione" placeholder="Inserisci una breve descrizione dell'episodio"></textarea>
                 </div>
+                
                 <div class="form-group">
                     <label for="episodio_tag">Tag: </label>
                     <input type="text" class="form-control" id="episodio_tag" name="tag" placeholder="Inserisci i tag">
@@ -174,6 +193,7 @@
             </form>
         </div>
 
+        <!-- MODAL FOOTER -->
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="if (cambiamenti_effettuati) {location.reload();}">Chiudi</button>
           <button type="submit" class="btn btn-success" form="form_aggiungi_episodio">Aggiungi</button>
@@ -320,6 +340,7 @@
                                             tbody.append(riga);
                                             
                                         });
+
                                         table.append(tbody);
                                         box_stagione.append(table);
 
@@ -449,7 +470,6 @@
                     data: formData,
 
                     success: function(response) {
-                        
                         alert(response.message);
                         cambiamenti_effettuati = true;
                     },

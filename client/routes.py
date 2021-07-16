@@ -14,15 +14,18 @@ def serie():
 
 @app.route('/serie/<int:id>', methods=['GET'])
 def serie_by_id(id):
-    return render_template('serie_by_id.html', serie_id=id)
+    return render_template('serie.html', serie_id=id)
+
 
 @app.route('/add_serie', methods=['GET'])
 def add_serie():
     return render_template('add_serie.html')
 
+
 @app.route('/stagione/<int:id>', methods=['GET'])
 def stagione(id):
     return render_template('stagione.html', stagione_id=id)
+
 
 @app.route('/episodio/<int:id>', methods=['GET'])
 def episodio(id):
