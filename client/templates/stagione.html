@@ -68,12 +68,14 @@
             </div>
         </div>
     </div>
+    
     <br>
+
     <script>
         $(document).ready(
             function() {
                 $.ajax({
-                    url: server_ip + '/stagione/{{stagione_id}}',
+                    url: `${server_ip}/stagione/{{stagione_id}}`,
                     type: 'GET',
                     contentType: "application/json",
 
@@ -109,7 +111,7 @@
             },
             submitHandler: function (form) {
                 $.ajax({
-                    url: server_ip + '/stagione',
+                    url: `${server_ip}/stagione`,
                     type: 'PUT',
                     data: $(form).serialize(),
 
@@ -147,7 +149,7 @@
                 var formData = new FormData(form);
 
                 $.ajax({
-                    url: server_ip + '/episodio',
+                    url: `${server_ip}/episodio`,
                     type: 'POST',
                     data: formData,
 

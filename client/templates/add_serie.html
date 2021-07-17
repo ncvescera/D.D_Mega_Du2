@@ -44,7 +44,7 @@
             },
             submitHandler: function (form) {
                 $.ajax({
-                    url: server_ip + '/serie',
+                    url: `${server_ip}/serie`,
                     type: 'POST',
                     data: $(form).serialize(),
 

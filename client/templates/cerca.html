@@ -46,7 +46,7 @@
             },
             submitHandler: function (form) {
                 $.ajax({
-                    url: server_ip + '/cerca',
+                    url: `${server_ip}/cerca`,
                     type: 'POST',
                     data: $(form).serialize(),
 
