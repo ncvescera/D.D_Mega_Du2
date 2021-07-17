@@ -1,9 +1,189 @@
 {% extends "layout.html" %}
 {% block content %}
-    <h1>Io sono un titolo !</h1>
+    <h1>D.D Mega D.U. <sup>2</sup></h1>
 
-    <p>Io sono del testo che sta bene con il titolo !!</p>
+    <p>
+        Benvenuto nel potentissimo Database Distribuito per Serie Tv e Sketch Comici ! <br>
+        In questa pagina potrai leggere una breve guida all'utilizzo del sito che ti permetterà di comprendere al meglio 
+        le funzionalità di questa meraviglia tecnologica.
+        Benissimo, allora inissiamo !
+    </p>
 
-    <!-- TODO -->
-    <!-- Aggiungere una breve introduzione al sito -->
+    <h2>Barra di Navigazione</h2>
+
+    <p>
+        Tramite la modernissima Barra di Navigazione potrai spostarti rapidamente tra le pagine del sito.
+        Nota come le voci sono autoesplicative e si illuminano al passaggio del mouse 😲.
+
+        <br><br>
+
+        Le pagine che potrai andare a visitare sono:
+
+        <ul>
+            <li><b>Home</b>: questa pagina</li>
+            <li><b>Serie</b>: mostra tutte le Serie presneti all'interno del Database</li>
+            <li><b>Nuova Serie</b>: scorciatoia che ti permette di Aggiungere una nuova Serie</li>
+            <li><b>Cerca</b>: pagina per effettuare ricerche all'interno del Database</li>
+        </ul>
+    </p>
+
+    <h2>Serie</h2>
+
+    <p>
+        In questa pagina troverai tutte le serie presenti all'interno del Database. <br>
+
+        <img src="/static/img/series.png" class="img-fluid" alt="Responsive image">
+
+        <br><br>
+
+        Nella parte superiore del riquardo relativo alla Serie verranno mostrati i tag relativi ad essa ed il bottone per eliminarla.<br>
+        Nella parte inferiore troverai il <b>Titolo</b> e la <b>Descrizione</b>. <br>
+        Con il bottone "Aggiungi Serie" verrai rendirizzato alla pagina che ti permetterà di inserire una nuova serie.
+
+        <br><br>
+
+        Con un clik sul corpo della Serie verrai indirizzato alla pagina che ti mostrerà nel dettaglio le informazio, stagioni ed episodi.<br>
+        Con un clik destro (o centrale) la pagina si aprirà su una nuova finestra 😲.
+
+        <h3>Pagina Serie</h3>
+
+        <p>
+            Questa è la pagina che ti permetterà di gestire e vedere tutti i dettagli relativi ad una singola Serie. <br><br>
+
+            <img src="/static/img/serie.png" class="img-fluid" alt="Responsive image"> <br><br>
+
+            In alto troverai i tag relativi alla serie e il bottone per eliminarla. Poi il Titolo ed il bottone per accedere alla sezione per Modificare le informazioni.
+            Ancora in fondo c'è la descrizione e per finire la parte relativa alle Stagioni.<br>
+
+            <h4>Stagione</h4>
+
+            Nella sezione relativa alle stagioni troverai tutte le Stagioni con tutti i loro Episodi. Ogni stagione accanto al proprio nome 
+            ha tre bottoni:
+
+            <ul>
+                <li>
+                    <button class="btn btn-sm btn-success">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-lg" viewBox="0 0 16 16">
+                            <path d="M8 0a1 1 0 0 1 1 1v6h6a1 1 0 1 1 0 2H9v6a1 1 0 1 1-2 0V9H1a1 1 0 0 1 0-2h6V1a1 1 0 0 1 1-1z"></path>
+                        </svg>
+                    </button>
+
+                    Questo bottone ti permetterà di inserire un nuovo Episodio all'interno della Stagione.<br><br>
+                </li>
+                <li>
+                    <button class="btn btn-sm btn-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"></path>
+                            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"></path>
+                        </svg>
+                    </button>
+
+                    Con questo bottone potrai andare a modificare le informazioni della Serie.<br><br>
+                </li>
+                <li>
+                    <button class="btn btn-sm btn-danger">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"></path>
+                            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"></path>
+                        </svg>
+                    </button>
+
+                    Questo bottone ti permetterà di eliminare l'intera Stagione con anche tutti i suoi Episodi.
+                </li>
+            </ul>
+
+            <br>
+
+            <h4>Episodio</h4>
+            
+            All'interno di ogni Stagione troverai la Tabella di Tutti gli Episodi. <br><br>
+
+            <img src="/static/img/episodi.png" class="img-fluid" alt="Responsive image"> <br><br>
+
+            Ogni riga di questa tabella rappresenta un Episodio e mostrerà le sue informazioni e tre bottoni funzione:
+
+            <ul>
+                <li>
+                    Informazioni:
+
+                    <ul>
+                        <li>Nome</li>
+                        <li>Descrizione</li>
+                        <li>Tags</li>
+                    </ul>
+                </li>
+                <li>
+                    Bottoni:
+                    <ul>
+                        <li>
+                            <button class="btn btn-sm btn-info">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-play-circle" viewBox="0 0 16 16">
+                                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"></path>
+                                    <path d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445z"></path>
+                                </svg>
+                            </button>
+
+                            Con questo bottone potrai guardare l'Episodio.
+                            <br>
+                            <br>
+                        </li>
+                        <li>
+                            <button class="btn btn-sm btn-primary">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+                                    <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"></path>
+                                    <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"></path>
+                                </svg>
+                            </button>
+                            
+                            Con questo bottone potrai modificare le informazioni relative all'Episodio.
+                            <br>
+                            <br>
+                        </li>
+                        <li>
+                            <button class="btn btn-sm btn-danger">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                                    <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"></path>
+                                    <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"></path>
+                                </svg>
+                            </button>
+
+                            Con questo bottone potrai eliminare l'Episodio.
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+
+        </p>
+    </p>
+
+    <br>
+
+    <h2>Cerca</h2>
+
+    <p>
+        La pagina Cerca ti permette di effettuare ricerche all'interno del Database ! <br><br>
+
+        <img src="/static/img/cerca.png" class="img-fluid" alt="Responsive image"> <br><br>
+
+        Inserendo la stringa di ricerca che si desidera nell'apposito spazio, verranno visualizzate tutti gli Episodi, Stagioni e Serie inerenti a quella ricerca. <br>
+        Nota: Vengono mostrati tutti gli elementi in cui la parola cercata compare nei tag o nel titolo.
+    </p>
+    
+    <br>
+    <hr>
+    <br>
+
+    <div class="jumbotron">
+        <h1 class="display-4">Addio, DeeDee MegaDooDoo!</h1>
+
+        <p class="lead">In memoria dell'agente di polizia Daidre Mengedoht (DeeDee MegaDooDoo) morta combattendo per garantire e far rispettare i diritti degli onesti cittadini americani,
+            il cui nome è stato storpiato e reso celebre.
+        </p>
+        
+        <hr class="my-4">
+        
+        <p class="lead">
+            <a href="https://www.youtube.com/watch?v=bnL1iPdQVuc"><img src="/static/img/deedee.jpg" class="img-fluid" alt="Responsive image"></a>
+        </p>
+    </div>
 {% endblock content %}
