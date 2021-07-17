@@ -13,9 +13,12 @@
 
 .rigthalign {
     text-align: right;
-    /*margin-right: 1em;*/
 }
 
 .cliccabile {
     cursor: pointer;
+}
+
+nav {
+    background-color: #F0F0F0;
 }
