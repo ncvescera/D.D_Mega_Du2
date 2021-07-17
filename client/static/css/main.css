@@ -19,6 +19,9 @@
     cursor: pointer;
 }
 
+.func-buttons {
+    width: 20%;
+}
 nav {
     background-color: #F0F0F0;
 }

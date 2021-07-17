@@ -57,7 +57,7 @@ function plot_episodi(episodi) {
         var nome = $('<td>').text(element.nome);
         var descrizione = $('<td>').text(element.descrizione);
         var tag = $('<td class="tag">').text(element.tag);
-        var play = $('<td class="rigthalign">')
+        var play = $('<td class="rigthalign func-buttons">')
             .append(
                 $('<a class="btn btn-sm btn-info" target="_blank">')    // bottone PLAY
                     .attr('href', `${server_ip}/play/${element.id}`)
