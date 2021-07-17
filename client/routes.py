@@ -30,3 +30,8 @@ def stagione(id):
 @app.route('/episodio/<int:id>', methods=['GET'])
 def episodio(id):
     return render_template('episodio.html', episodio_id=id)
+
+
+@app.route('/cerca', methods=['GET'])
+def cerca():
+    return render_template('cerca.html')

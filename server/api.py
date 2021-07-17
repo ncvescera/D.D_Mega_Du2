@@ -418,3 +418,34 @@ def delete_episodio(id):
             return jsonify({'error': 'Impossibile eliminare l\'episodio !'}), 400
 
     return jsonify({'error': 'L\'episodio non esiste !'}), 400
+
+
+@app.route('/cerca', methods=['POST'])
+def cerca():
+    def to_dict(array: list) -> list:
+        return [x.as_dict() for x in array]
+
+    ricerca = request.form['ricerca']
+    
+    # ricerca
+    serie = Serie.query.filter((Serie.nome.like(f"%{ricerca}%")) | ((Serie.tag.like(f"%{ricerca}%")))).all()
+    stagioni = Stagione.query.filter((Stagione.nome.like(f"%{ricerca}%")) | ((Stagione.tag.like(f"%{ricerca}%")))).all()
+    episodi = Episodio.query.filter((Episodio.nome.like(f"%{ricerca}%")) | ((Episodio.tag.like(f"%{ricerca}%")))).all()
+
+    # print(serie, stagioni, episodi)
+
+    # conversione per JSON
+    serie_json = to_dict(serie)
+    stagioni_json = to_dict(stagioni)
+    episodi_json = to_dict(episodi)
+
+    # dizionario finale
+    result = {
+        'serie': serie_json,
+        'stagioni': stagioni_json,
+        'episodi': episodi_json
+    }
+
+    # print(result)
+
+    return jsonify({'response': result}), 200
