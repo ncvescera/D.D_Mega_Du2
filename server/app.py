@@ -2,9 +2,11 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 
+
 app = Flask(__name__)   # inizializzo l'app
 db = SQLAlchemy(app)    # inizializzo il gestore del DB
-cors = CORS(app)
+cors = CORS(app)        # inizializzo il gestore CROSS
+
 
 if __name__ == "__main__":
     import config

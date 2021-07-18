@@ -25,13 +25,22 @@ def process_file(file_name: str, save_dir: str, episodio_id: str, stagione_id: s
     Ritorna il nuovo nome del file e i path dove andra' salvato
     """
 
-    # serie_id = Stagione.query.filter_by(id=stagione_id).first().serie_id
-    filename = secure_filename(file_name)
+    filename = secure_filename(file_name)   # prende il nome del file
 
+    # crea il nuovo nome ({serie_id}_{stagione_id}_{episodio_id}.mp4)
     new_nome = f"{serie_id}_{stagione_id}_{episodio_id}"
     ext = filename.split('.')[-1]
     new_filename = f"{new_nome}.{ext}"
 
+    # crea il path di dove andra' salvato il file
     file_path = os.path.join(save_dir, new_filename)
 
     return (new_filename, file_path)
+
+
+def to_dict(array: list) -> list:
+    """
+    Applica il metodo as_dict() ad ogni elemento della lista
+    """
+    
+    return [x.as_dict() for x in array]

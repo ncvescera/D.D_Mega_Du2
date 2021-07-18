@@ -25,7 +25,7 @@ def all_serie():
 
     series = Serie.query.all()
 
-    series_json = [x.as_dict() for x in series]     # trasforma ogni serie in dizionario per essere convertito in json
+    series_json = to_dict(series)     # trasforma ogni serie in dizionario per essere convertito in json
 
     return jsonify({"response": series_json}), 200
 
@@ -168,7 +168,7 @@ def stagioni_by_serie(serie_id):
 
     stagioni = natsorted(stagioni, key=lambda x: x.nome)  # ordina le stagioni in base al nome
     
-    stagioni_json = [x.as_dict() for x in stagioni]
+    stagioni_json = to_dict(stagioni)
 
     return jsonify({"response": stagioni_json}), 200
 
@@ -295,7 +295,7 @@ def episodi_by_stagione(id):
 
     episodi = natsorted(episodi, key=lambda x: x.nome)  # ordina le stagioni in base al nome
 
-    episodi_json = [x.as_dict() for x in episodi]
+    episodi_json = to_dict(episodi)
 
     return jsonify({'response': episodi_json}), 200
 
@@ -422,8 +422,9 @@ def delete_episodio(id):
 
 @app.route('/cerca', methods=['POST'])
 def cerca():
-    def to_dict(array: list) -> list:
-        return [x.as_dict() for x in array]
+    """
+    Cerca all'interno del Database la stringa passata
+    """
 
     ricerca = request.form['ricerca']
     
@@ -431,8 +432,6 @@ def cerca():
     serie = Serie.query.filter((Serie.nome.like(f"%{ricerca}%")) | ((Serie.tag.like(f"%{ricerca}%")))).all()
     stagioni = Stagione.query.filter((Stagione.nome.like(f"%{ricerca}%")) | ((Stagione.tag.like(f"%{ricerca}%")))).all()
     episodi = Episodio.query.filter((Episodio.nome.like(f"%{ricerca}%")) | ((Episodio.tag.like(f"%{ricerca}%")))).all()
-
-    # print(serie, stagioni, episodi)
 
     # conversione per JSON
     serie_json = to_dict(serie)
@@ -445,7 +444,5 @@ def cerca():
         'stagioni': stagioni_json,
         'episodi': episodi_json
     }
-
-    # print(result)
 
     return jsonify({'response': result}), 200
